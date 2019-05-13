@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 
-import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.luck.picture.lib.PictureSelector;
@@ -31,9 +28,8 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private GridImageAdapter adapter;
-    private RecyclerView recyclerView;
+public class MainActivity extends AppCompatActivity {
+    private GridImageAdapter mAdapter;
     private List<LocalMedia> selectList = new ArrayList<>();
     private int chooseMode = PictureMimeType.ofAll();
     private int themeId;
@@ -43,14 +39,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         themeId = R.style.picture_default_style;
-        recyclerView = findViewById(R.id.recycler);
+        RecyclerView recyclerView = findViewById(R.id.recycler);
         FullyGridLayoutManager manager = new FullyGridLayoutManager(MainActivity.this, 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        adapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
-        adapter.setList(selectList);
-        adapter.setSelectMax(5);
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
+        mAdapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
+        mAdapter.setList(selectList);
+        mAdapter.setSelectMax(5);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 if (selectList.size() > 0) {
@@ -168,21 +164,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     for (LocalMedia media : selectList) {
                         Log.i("图片-----》", media.getPath());
                     }
-                    adapter.setList(selectList);
-                    adapter.notifyDataSetChanged();
+                    mAdapter.setList(selectList);
+                    mAdapter.notifyDataSetChanged();
                     break;
             }
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.left_back:
-                finish();
-                break;
-        }
-    }
 
     /**
      * 自定义压缩存储地址
